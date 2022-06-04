@@ -3,6 +3,7 @@ import { ApiRequest } from '../controllers/api';
 import { ErrorText } from '../components/text';
 import TextInput from '../components/input';
 import Button from '../components/button';
+import Logo from '../components/logo';
 
 export default class Login extends React.Component {
     state = {
@@ -25,7 +26,7 @@ export default class Login extends React.Component {
         return (
             <div className="bg-slate-200 h-screen w-screen grid content-center justify-center">
                 <form onSubmit={this.login} className="bg-slate-50 pl-24 pr-24 pb-8 pt-8 shadow-lg rounded-lg grid">
-                    <h1 className="text-5xl text-center font-bold"> Manu CMS </h1>
+                    <Logo/>
                     <TextInput name="username" placeholder="Username" />
                     <TextInput name="password" placeholder="Password" password />
                     {this.state.valid ?
