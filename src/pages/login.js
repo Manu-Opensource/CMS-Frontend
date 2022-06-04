@@ -1,5 +1,8 @@
 import * as React from 'react'
-import { ApiRequest } from '../controllers/api'
+import { ApiRequest } from '../controllers/api';
+import { ErrorText } from '../components/text';
+import TextInput from '../components/input';
+import Button from '../components/button';
 
 export default class Login extends React.Component {
     state = {
@@ -20,12 +23,17 @@ export default class Login extends React.Component {
     
     render = () => {
         return (
-            <div>
-                <h1> Login </h1>
-                <form onSubmit={this.login}>
-                    <input name="username" placeholder="username"/>
-                    <input name="password" placeholder="password" type="password"/>
-                    <input type="submit" value="Login" /> 
+            <div className="bg-slate-200 h-screen w-screen grid content-center justify-center">
+                <form onSubmit={this.login} className="bg-slate-50 pl-24 pr-24 pb-8 pt-8 shadow-lg rounded-lg grid">
+                    <h1 className="text-5xl text-center font-bold"> Manu CMS </h1>
+                    <TextInput name="username" placeholder="Username" />
+                    <TextInput name="password" placeholder="Password" password />
+                    {this.state.valid ?
+                    <div/>
+                    :
+                    <ErrorText className="text-center mt-2"> Invalid Credentials </ErrorText>
+                    }
+                    <Button formSubmit value="Login" className="mt-4 m-auto w-full p-4"/>
                 </form>
             </div>
         );
