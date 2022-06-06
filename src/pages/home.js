@@ -1,14 +1,34 @@
 import * as React from 'react'
 import HandleAuthentication from '../controllers/auth';
+import { ApiRequest } from '../controllers/api';
 import Sidebar from '../components/sidebar';
 import Text, { MedText, BigText } from '../components/text';
 import Button from '../components/button';
 import ListEntry from '../components/listentry';
 
 export default class Home extends React.Component {
+    state = {
+        recentChanges: undefined
+    }
     
     componentDidMount = () => {
         HandleAuthentication(); 
+        this.getRecentChanges();
+    }
+
+    getRecentChanges = async() => {
+        ApiRequest("getcollection", {name: "CMSContentChanges"}).then(async (res) => {
+            let recentChanges = [];
+            let i = 0;
+            res = await res.json();
+            res.forEach(change => {
+                recentChanges.push(
+                    <ListEntry className="max-w-[25vw]" text={change.change} key={i}/>
+                );
+                i++;
+            });
+            this.setState({recentChanges: recentChanges});
+        });
     }
 
     render = () => {
@@ -20,8 +40,7 @@ export default class Home extends React.Component {
                     <div className="flex h-full w-[90%] m-auto">
                         <div className="shadow-xl bg-slate-100/50 p-4 rounded-sm h-max text-center">
                             <MedText className="m-auto"> Recent Content Changes </MedText>
-                            <ListEntry className="max-w-[25vw]" text="Added [C++ Compilation Pipeline Explained]" buttonText="Edit"/>
-                            <ListEntry className="max-w-[25vw]" text="Modified [Python 'crypto' Library Explained]" buttonText="Edit"/>
+                            {this.state.recentChanges}
                             <Button className="mt-8" value="View More" />
                         </div>
                     </div>

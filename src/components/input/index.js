@@ -8,13 +8,13 @@ export default class TextInput extends React.Component {
                 placeholder={this.props.placeholder}
                 type={this.props.password ? "password" : "text"}
                 autoComplete="off"
-                className="
+                className={`
                             outline-none rounded-sm
                             mt-4 p-2
                             border-b-16
                             focus:ring focus:ring-blue-500
                             ring ring-slate-300 ring-1
-                            bg-slate-200"
+                            bg-slate-200 ` + this.props.className}
             />
         );
     }

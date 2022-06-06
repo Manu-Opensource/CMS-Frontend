@@ -13,9 +13,10 @@ export async function ApiRequest (path, args) {
             i++;
         });
     }
-    return await fetch(link, {credentials: 'include'}).catch(err => {
+    let res = await fetch(link, {credentials: 'include'}).catch(err => {
         console.log(err)
     });
+    return res;
 }
 
 
