@@ -7,6 +7,7 @@ import Home from './pages/home';
 import Content from './pages/content';
 import CreateCollection from './pages/createCollection';
 import Collection from './pages/collection';
+import AddDocument from './pages/addDocument';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,6 +19,7 @@ root.render(
                 <Route path="/content" element={<Content/>}/>
                 <Route path="/createcollection" element={<CreateCollection/>}/>
                 <Route path="/collection" element={<Collection/>}/>
+                <Route path="/adddocument" element={<AddDocument/>}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>

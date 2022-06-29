@@ -8,6 +8,7 @@ export default class TextInput extends React.Component {
                 placeholder={this.props.placeholder}
                 type={this.props.password ? "password" : "text"}
                 autoComplete="off"
+                onChange={() => {}}
                 className={`
                             outline-none rounded-sm
                             mt-4 p-2
