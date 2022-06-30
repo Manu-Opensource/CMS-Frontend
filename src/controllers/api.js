@@ -19,4 +19,19 @@ export async function ApiRequest (path, args) {
     return res;
 }
 
+export async function ApiPostRequest (path, args) {
+    let link = API_LINK + path;
+    let res = await fetch(link, {
+        method: "post",
+        credentials: 'include',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(args)
+    }).catch(err => {
+        console.log(err);
+    });
+    return res;
+}
 
