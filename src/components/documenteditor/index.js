@@ -21,23 +21,22 @@ export default class DocumentEditor extends React.Component {
             let x = i;
             ret.push(
             <tr key={i} name={entry.name} className="flex content-center place-content-around">
-                <td name="name" className=""><TextInput className=""/></td>
-                {entry.isXML ?
-                <td name="value" className=""><Button value="Edit XML" className="pl-16 pr-16 mt-4 mb-0 pt-2 pb-2" onClick={() => {
+                <td name="name"> <TextInput className=""/></td>
+                <td name="value" className={entry.isXML ? "hidden" : "flex"}><TextInput className=""/></td>
+                <td name={entry.isXML ? "XML" : ""} className={entry.isXML ? "flex" : "hidden"}><Button value="Edit XML" className="pl-[4.5rem] pr-[4.5rem] m-0 mt-4 mb-0 pt-2 pb-2" onClick={() => {
                     this.editXMLModal(x);
                 }}/></td>
-                :
-                <td name="value" className=""><TextInput className=""/></td>
-                }
+                <td name="delete"><Button value="Delete" onClick={() => {this.deleteEntry(x)}}/></td>
             </tr>);
             i++;
         });
         return (
             <table className="w-full">
                 <thead>
-                    <tr className="flex content-center place-content-around">
+                    <tr className="flex content-center place-content-around w-full text-center">
                         <th>Entry Key</th>
                         <th>Entry Value</th>
+                        <th>Delete Entry</th>
                     </tr>
                 </thead>
                 <tbody id="DocumentTable">
@@ -71,6 +70,14 @@ export default class DocumentEditor extends React.Component {
         this.setState({data: data});
     }
 
+    deleteEntry = (i) => {
+        let data = this.save();
+        data.splice(i, 1);
+        console.log(data);
+        this.setState({data: data});
+        this.updateUI(data);
+    }
+
     save = () => {
         let table = document.getElementById("DocumentTable");
         let data = this.state.data;
@@ -78,8 +85,24 @@ export default class DocumentEditor extends React.Component {
             let entry = table.children[i];
             for (let j = 0; j < entry.children.length; j++) {
                 let child = entry.children[j];
-                if (child.getAttribute("name") == "name") data[i].name = child.children[0].value;
-                else data[i].value = child.children[0].value;
+                if (child.getAttribute("name") === "name") data[i].name = child.children[0].value;
+                else if (child.getAttribute("name") === "value" && !data[i].isXML) data[i].value = child.children[0].value;
+            }
+        }
+        this.setState({data: data});
+        return data;
+    }
+
+    updateUI = (data) => {
+        let table = document.getElementById("DocumentTable");
+        if (!data)
+            data = this.state.data;
+        for (let i = 0; i < Math.min(table.children.length, data.length); i++) {
+            let entry = table.children[i];
+            for (let j = 0; j < entry.children.length; j++) {
+                let child = entry.children[j];
+                if (child.getAttribute("name") === "name") child.children[0].value = data[i].name;
+                else if (child.getAttribute("name") === "value") child.children[0].value = data[i].value;
             }
         }
     }
