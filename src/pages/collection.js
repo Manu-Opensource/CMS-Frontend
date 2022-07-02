@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '../components/button';
 import DocumentList from '../components/documentlist';
 import Sidebar from '../components/sidebar';
-import Text, { BigText } from '../components/text';
+import { BigText } from '../components/text';
 
 export default class Collection extends React.Component {
     state = {
@@ -23,8 +23,8 @@ export default class Collection extends React.Component {
                     <div className="w-full mt-4 mb-4 flex content-center justify-center">
                         <BigText className="m-4 mr-36 text-center"> Collection [{this.state.name}] </BigText> 
                         <Button className="ml-36" value="Add Document" href={`/adddocument?name=${this.state.name}`}/>
-                        <DocumentList collectionName={this.state.name} />
                     </div>
+                    <DocumentList collectionName={this.state.name} className="h-[85%]" />
                 </div>
             </div>
         );

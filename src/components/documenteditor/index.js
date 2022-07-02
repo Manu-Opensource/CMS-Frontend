@@ -4,21 +4,23 @@ import Button from '../button';
 import TextInput from '../input';
 
 export default class DocumentEditor extends React.Component {
-
     state = {
-        data: [],
+        data: [{name: "Name", value: ""}, {name: "Id", value: "0000000"}],
         xmlModalVisible: false,
         xmlEntryIndex: "",
     }
 
-    constructor(props) {
-        super(props);
-        this.state.documentId = props.documentId;
-        this.state.collectionName = props.collectionName;
-    }
-
-    retrieveData = async (collectionName) => { //ToDo
-        return await (await ApiRequest("getcollection", {name: collectionName})).json();  
+    retrieveData = async () => { //ToDo
+        let data = await (await ApiRequest("getdocument", {collectionname: this.props.collectionName, documentid: this.props.documentId})).json();  
+        console.log(data);
+        let ret = [];
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].Key !== "_id") {
+                ret.push({name: data[i].Key, value: data[i].Value, isXML: data[i].Value.startsWith("<XML>")})
+            }
+        }
+        this.setState({data: ret})
+        return ret;
     }
 
     genUI = () => { 
@@ -67,8 +69,9 @@ export default class DocumentEditor extends React.Component {
     componentDidMount = async  () => {
         if (this.props.documentId) {
             let data = await this.retrieveData();
-            this.setState({data: data, filtered: data});
-        }
+            this.setState({data: data});
+            this.updateUI(data);
+        } else this.updateUI(this.state.data);
     }
 
     addEntry = (isXML) => {
@@ -100,23 +103,34 @@ export default class DocumentEditor extends React.Component {
         return data;
     }
 
-    create = async () => {
+    save = async () => {
         let data = this.retrieveInput();
-        if (this.state.documentId) {
+        if (this.props.documentId) {
             let args = {
-                collectionName: this.state.collectionName,
-                id: this.state.documentId,
+                collectionName: this.props.collectionName,
+                documentId: this.props.documentId,
                 doc: data
             }
             await ApiPostRequest("updatedocument", args);
         } else {
             let args = {
-                collectionName: this.state.collectionName,
+                collectionName: this.props.collectionName,
                 doc: data,
             }
             await ApiPostRequest("createdocument", args);
         }
-        window.location = `/collection?name=${this.state.collectionName}`
+        window.location = `/collection?name=${this.props.collectionName}`
+    }
+
+    delete = async () => {
+        if (this.props.documentId) {
+            let args = {
+                collectionname: this.props.collectionName,
+                documentid: this.props.documentId,
+            }
+            await ApiRequest("deletedocument", args);
+            window.location = `/collection?name=${this.props.collectionName}`
+        }
     }
 
     updateUI = (data) => {
@@ -148,7 +162,11 @@ export default class DocumentEditor extends React.Component {
                     <div className="m-auto">
                         <Button value="Add Text Entry" className="w-min-content" onClick={() => {this.addEntry(false)}}/>
                         <Button value="Add XML Entry" className="w-min-content" onClick={() => {this.addEntry(true)}}/>
-                        <Button value="Create" onClick={this.create}/>
+                        <Button value={this.props.documentId ? "Save" : "Create"} onClick={this.save}/>
+                        {this.props.documentId ?
+                        <Button value="Delete Document" onClick={this.delete}/>
+                        : <div/>
+                        }
                     </div>
                 </div>
             </div>

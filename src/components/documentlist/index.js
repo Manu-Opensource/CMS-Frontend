@@ -1,37 +1,27 @@
 import * as React from 'react';
 import { ApiRequest } from '../../controllers/api';
-import Button from '../button';
+import ListEntry from '../listentry';
 
 export default class DocumentList extends React.Component {
     state = {
         data: null,
         filtered: null,
+        ui: null,
     }
 
-    retrieveData = async (collectionName) => {
-        console.log("Retrieving data", collectionName); 
-        return await (await ApiRequest("getcollection", {name: collectionName})).json();  
+    retrieveData = async () => {
+        let data = await (await ApiRequest("getcollection", {name: this.props.collectionName})).json()
+        return data
     }
 
-    genUI = () => { 
-        if (!this.state.filtered) return;
-        console.log(this.state.filtered)
+    genUI = (data) => { 
+        console.log("Generating UI");
         let ret = [];
-        let i = 0;
-        this.state.filtered.forEach(doc => {
+        data.forEach(doc => {
             ret.push(
-            <tr key={i}>
-                <td>{doc.name}</td>
-                <td><Button value="Edit" /></td>
-            </tr>);
-            i++;
+                <ListEntry className="w-[25%] m-[4%] h-min text-center" text={doc.Name} buttonText="Edit" key={doc.id} href={`/document?id=${doc.Id}&name=${this.props.collectionName}`}/>);
         });
-        return (
-            <table>
-                <th>Document Name</th>
-                <th>Edit Document</th>
-            </table>
-        );
+        this.setState({ui: ret});
     }
 
     updateFilter = async (filter) => {
@@ -56,17 +46,18 @@ export default class DocumentList extends React.Component {
         this.setState({filtered: filtered});
     }
 
-    componentDidMount = async  () => {
-        if (this.props.collectionName) {
-            let data = await this.retrieveData(this.props.collectionName);
+    componentDidUpdate = async (p) => {
+        if (p && p.collectionName !== this.props.collectionName) {
+            let data = await this.retrieveData();
             this.setState({data: data, filtered: data});
-        }
+            this.genUI(data);
+        } 
     }
 
     render = () => {
         return (
-            <div>
-                {this.genUI()}
+            <div className={"flex flex-wrap overflow-scroll " + this.props.className}>
+                {this.state.ui}
             </div>
         );
     }

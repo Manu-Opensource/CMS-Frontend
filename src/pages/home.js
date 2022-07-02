@@ -2,7 +2,7 @@ import * as React from 'react'
 import HandleAuthentication from '../controllers/auth';
 import { ApiRequest } from '../controllers/api';
 import Sidebar from '../components/sidebar';
-import Text, { MedText, BigText } from '../components/text';
+import { MedText, BigText } from '../components/text';
 import Button from '../components/button';
 import ListEntry from '../components/listentry';
 
@@ -27,6 +27,8 @@ export default class Home extends React.Component {
                 );
                 i++;
             });
+            recentChanges.reverse()
+            recentChanges = recentChanges.slice(0, 5);
             this.setState({recentChanges: recentChanges});
         });
     }

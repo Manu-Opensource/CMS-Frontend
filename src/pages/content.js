@@ -24,7 +24,7 @@ export default class Content extends React.Component {
             res.forEach(collection => {
                 if (!collection.startsWith("CMS"))
                 collections.push(
-                    <ListEntry className="max-w-[25vw]" text={collection} buttonText="Manage" key={i} href={`/collection?name=${collection}`}/>
+                    <ListEntry className="w-[15vw]" text={collection} buttonText="Manage" key={i} href={`/collection?name=${collection}`}/>
                 )
                 i++;
             });
